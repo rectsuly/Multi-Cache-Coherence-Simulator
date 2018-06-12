@@ -218,14 +218,18 @@ public class Snoop {
 				}
 			}
 			else{											//写
+				// Step I: 找到本Cache的相应地址，并将状态改为Modified
 				int Nomodified = 1;
+				// Step I.1 先尝试查找有没有目标地址相同的项
 				for(i=target%(4/list_model)*list_model; i<(target%(4/list_model)+1)*list_model; i++){
 					if(panel_exec.Cache_Content[i][2].equals(String.valueOf(target))){
 						panel_exec.Cache_Content[i][1] = "Modified";		//将目标地址状态改为修改
 						Nomodified = 0;
 						break;
 					}
-					if(Nomodified==1){						//如果目标地址之前未读过或写过
+				}
+				// Step I.2 未找到目标地址相同的项，即目标地址之前未读过或写过
+					if(Nomodified==1){						
 						for(i=target%(4/list_model)*list_model; i<(target%(4/list_model)+1)*list_model; i++){
 							if(panel_exec.Cache_Content[i][1].equals("Invalid"))	//遇到第一个无效Cache块退出
 								break;
@@ -233,7 +237,8 @@ public class Snoop {
 						panel_exec.Cache_Content[i][2] = String.valueOf(target);	//将该Cache块的目标地址写入
 						panel_exec.Cache_Content[i][1] = "Modified";				//将该Cache块的状态改为修改
 					}
-					if(panel_exec != panel2){										//将其他处理器的Cache块中的目标地址内容设置为无效
+				// Step II 将其他处理器的Cache块中的目标地址内容设置为无效
+					if(panel_exec != panel2){										
 						for(i=target%(4/list_model)*list_model; i<(target%(4/list_model)+1)*list_model; i++){
 							if(panel2.Cache_Content[i][2].equals(String.valueOf(target)))
 								panel2.Cache_Content[i][1] = "Invalid";
@@ -257,7 +262,6 @@ public class Snoop {
 								panel5.Cache_Content[i][1] = "Invalid";
 						}
 					}
-				}
 			}
 			
 			/**********显示刷新后的数据********/
